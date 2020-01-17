@@ -326,7 +326,7 @@ void ZernikeDescriptor<T,TIn>::SaveInvariants (const char* _fName)
     //}
 
     int dim = invariants_.size ();
-    outfile << dim << '\n';
+    outfile << dim << ' ';
     //outfile.write ((char*)(&dim), sizeof(int));
     //outfile.write('\n');
     for (int i=0; i<dim; ++i)

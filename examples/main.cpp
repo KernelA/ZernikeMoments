@@ -47,14 +47,17 @@ for more information, see the paper:
 */
 
 #include <iostream>
+#include <boost\filesystem.hpp>
 
 // ---- local includes ----
 #include "ZernikeDescriptor.h"
 #include "BinvoxReader.h"
 
+
 // reads a voxel grid from a binary file
 template<class TIn, class TOut>
 TOut* ReadGrid (const char* _fname, int& _dim)
+
 {
     std::ifstream infile (_fname, std::ios_base::binary | std::ios_base::in);
 
@@ -81,66 +84,83 @@ TOut* ReadGrid (const char* _fname, int& _dim)
     return result;
 }
 
-int main (int argc, char** argv)
+
+
+int main(int argc, char** argv)
 {
-    if (argc != 3)
-    {
-        std::cout << "Usage: ZernikeMoments " <<
-                     "filename " <<
-                     "<MaxOrder> " << std::endl;
-        return 0;
-    }
+	if (argc != 3)
+	{
+		std::cout << "Usage: ZernikeMoments " <<
+			"directname " <<
+			"<MaxOrder> " << std::endl;
+		return 0;
+	}
+	boost::filesystem::path DirectName(argv[1]);
+	std::vector<boost::filesystem::path> v;
 
-    //int d;
-    //double* voxels = ReadGrid<float, double> (argv[1], d);
+	for (auto&& x : boost::filesystem::recursive_directory_iterator(DirectName)) {
+		std::cout << x.path() << std::endl;
+		auto pos = x.path().string().find_first_of(".");
+		if ((x.path().string()[pos + 1] == 's') && (x.path().string()[pos + 2] == 'u') && (x.path().extension() == ".binvox")) {
+			std::cout << x.path() << std::endl;
+			v.push_back(x.path());
+		}
 
-    // .inv file name
-    std::string path{ argv[1] }, invFName;
+	}
 
-    vector<unsigned char> voxels;
+		//int d;
+		//double* voxels = ReadGrid<float, double> (argv[1], d);
 
-    size_t dim{};
+		// .inv file name
+	for (size_t i=0; i<v.size()-1; ++i){
 
-    if (!io::binvox::read_binvox(path, voxels, dim))
-    {
-        std::cerr << "Cannot read binvox" << std::endl;
-        return 1;
-    }
+		std::string path{ v[i].string() }, invFName;
 
-    // Воксель содержащий значения из центра
-    vector<double> double_voxels(voxels.size());
+		vector<unsigned char> voxels;
 
-    for (size_t x{ 0 }; x < dim; x++)
-    {
-        for (size_t z{ 0 }; z < dim; z++)
-        {
-            for (size_t y{ 0 }; y < dim; y++)
-            {
-                double_voxels.at((x * dim + z) * dim + y) = voxels.at((x * dim + z) * dim + y);
-            }
-        }
-    }
+		size_t dim{};
 
-    auto pos = path.find_last_of(".");
+		if (!io::binvox::read_binvox(path, voxels, dim))
+		{
+			std::cerr << "Cannot read binvox" << std::endl;
+			continue;
+		}
 
-    if (pos != std::string::npos && pos != 0)
-    {
-        invFName = path.substr(0, pos);
-    }
-    else
-    {
-        std::cerr << "No extension in input filename? : " << argv[1] << std::endl;
-    }
+		// Воксель содержащий значения из центра
+		vector<double> double_voxels(voxels.size());
 
-    // compute the zernike descriptors
-    ZernikeDescriptor<double, double> zd (double_voxels.data(), dim, std::stoi(argv[2]));
+		for (size_t x{ 0 }; x < dim; x++)
+		{
+			for (size_t z{ 0 }; z < dim; z++)
+			{
+				for (size_t y{ 0 }; y < dim; y++)
+				{
+					double_voxels.at((x * dim + z) * dim + y) = voxels.at((x * dim + z) * dim + y);
+				}
+			}
+		}
 
-    invFName += ".inv";
+		auto pos = path.find_last_of(".");
 
-    std::string invFile = "tets2.inv";
-    
-    std::cout << "Saving invariants file: " << invFile << std::endl;
+		if (pos != std::string::npos && pos != 0)
+		{
+			invFName = path.substr(0, pos);
+		}
+		else
+		{
+			std::cerr << "No extension in input filename? : " << v[i].string() << std::endl;
+		}
 
-    // save them into an .inv file
-    zd.SaveInvariants (invFile.c_str());
+		// compute the zernike descriptors
+		ZernikeDescriptor<double, double> zd(double_voxels.data(), dim, std::stoi(argv[2]));
+
+		invFName += ".inv";
+
+		std::string invFile = invFName;
+		
+		std::cout << "Saving invariants file: " << invFile << std::endl;
+
+		// save them into an .inv file
+		zd.SaveInvariants(invFile.c_str());
+	}
 }

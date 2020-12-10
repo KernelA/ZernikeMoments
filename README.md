@@ -52,9 +52,9 @@ for more information, see the paper:
 ## Requirements
 
 1. CMake 3.17 or higher
-2. Boost.Filesystem, Boost.Program_options, Boost.Log,  Boost.Log_setup, Boost.Math, Boost.Lockfree 1.70 or higher.
-3. [PicoSHA2 (header only)](https://github.com/okdshin/PicoSHA2)
-4. [sqlite modern cpp](https://github.com/SqliteModernCpp/sqlite_modern_cpp)
+2. Boost.Filesystem, Boost.Program_options, Boost.Log,  Boost.Log_setup, Boost.Math, Boost.Lockfree 1.72 or higher.
+3. [PicoSHA2 (header only) added as git submodule](https://github.com/okdshin/PicoSHA2)
+4. [sqlite modern cpp added as git submodule](https://github.com/SqliteModernCpp/sqlite_modern_cpp)
 3. Compiler with C++14.
 
 ## Building
@@ -70,12 +70,12 @@ mkdir build
 
 Run CMake:
 ```
-cmake -A x64 -DCMAKE_BUILD_TYPE=Release -DSQLITE_MODERN_CPP_INCLUDE_DIR:PATH="<path_to_modern_sqlite_header>" -DPicoSHA2_INCLUDE_DIR:PATH="<path_to_picosha2_header>" -DBoost_DIR="<path_to_boost_cmake_config_dir>" -S . -B .\build
+cmake -A x64 -DCMAKE_BUILD_TYPE=Release -DBoost_DIR="<path_to_boost_cmake_config_dir>" -S . -B .\build
 ```
 
 If you have vcpkg and Visual Studio 2019:
 ```
-cmake -A x64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE:FILEPATH="<path to_vcpkg>\vcpkg\scripts\buildsystems\vcpkg.cmake" -DSQLITE_MODERN_CPP_INCLUDE_DIR:PATH="<path_to_modern_sqlite_header>" -DPicoSHA2_INCLUDE_DIR:PATH="<path_to_picosha2_header>" -S . -B .\build
+cmake -A x64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE:FILEPATH="<path to_vcpkg>\vcpkg\scripts\buildsystems\vcpkg.cmake" -S . -B .\build
 ```
 
 ### Compilation
@@ -87,7 +87,7 @@ cmake --build .\build --target ALL_BUILD --config Release
 
 ## How to use
 
-1. Copy `.\main\logsettings.ini` to directory with executable file of program.
+1. Copy `.\main\logsettings.ini` to directory with executable file of program if it does not exist.
 2. Run program: `.\zernike3d.exe -d <path_to_directory_with_binvox> -n 20 -t 4`.
 
 The program computes Zernike Descriptors for all binvox files in the directory and subdirectories. It saves results in sqlite database file `descriptors.sqlite`. For more information see: `.\zernike3d.exe --help`.

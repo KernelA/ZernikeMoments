@@ -1,0 +1,8 @@
+[submodule "sqlmoderncpp"]
+	path = sqlmoderncpp
+	url = https://github.com/SqliteModernCpp/sqlite_modern_cpp.git
+	branch = 39d119190fbaeb95eb43b6da78176ca25a80f06f
+[submodule "picosha2"]
+	path = picosha2
+	url = https://github.com/okdshin/PicoSHA2.git
+	branch = b699e6c900be6e00152db5a3d123c1db42ea13d0

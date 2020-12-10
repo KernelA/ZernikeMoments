@@ -1,0 +1,43 @@
+name: autobuild
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+  workflow_dispatch:
+jobs:
+  windows-build:
+    name: Windows build
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install SQLite3
+        run: vcpkg.exe install sqlite3:x64-windows
+
+      - name: 'CMake Build'
+        run: |
+          New-Item ./build -ItemType Directory
+          cmake -DBoost_DIR="$env:BOOST_ROOT_1_72_0\lib\cmake\Boost-1.72.0" -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -S . -B ./build
+          cmake --build ./build --parallel 2
+  
+  linux-build:
+    name: Linux build
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: 'CMake Build'
+        run: |
+          mkdir ./build
+          cmake -DBoost_DIR="$BOOST_ROOT_1_72_0\lib\cmake\Boost-1.72.0" -S . -B ./build
+          cmake --build ./build --parallel 2
+        
+

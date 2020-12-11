@@ -1,4 +1,4 @@
-find_package(Boost 1.72 REQUIRED COMPONENTS filesystem program_options log log_setup)
+find_package(Boost 1.71 REQUIRED COMPONENTS filesystem program_options log log_setup)
 find_package(SQLite3 REQUIRED)
 
 

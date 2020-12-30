@@ -254,7 +254,6 @@ public:
         for (int x = 0; x < dimX; ++x)
         {
             std::cout << x << ". layer being processed\n";
-
             for (int y = 0; y < dimY; ++y)
             {
                 for (int z = 0; z < dimZ; ++z)

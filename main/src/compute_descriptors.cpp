@@ -1,6 +1,7 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #include "compute_descriptors.h"
+#include <iostream>
 
 void parallel::recursive_compute(const boost::filesystem::path & input_dir, int max_order, std::size_t queue_size, std::size_t max_thread, sqlite::database & db)
 {
@@ -179,7 +180,7 @@ void parallel::compute_descriptor(TasksQueue & queue, int max_order, std::atomic
 
     const size_t rows_buffer_size{ 10 };
 
-    sqldata::CollectionRows < DescriptorType> rows;
+    sqldata::CollectionRows<DescriptorType> rows;
 
     while (true)
     {
@@ -212,6 +213,22 @@ void parallel::compute_descriptor(TasksQueue & queue, int max_order, std::atomic
                 ZernikeDescriptor<DescriptorType, Container::iterator> zd(canonical_order_voxels.begin(), dim, max_order);
 
                 auto invs{ zd.get_invariants() };
+
+                auto grid_ = vector<vector<vector<std::complex<DescriptorType>>>>(dim, vector<vector<std::complex<DescriptorType>>>(dim, vector<std::complex<DescriptorType>>(dim)));    //vector<vector<int>>(9,vector<int>(9));
+                std::cout << "here \n";
+                // vector<vector<vector<std::complex<DescriptorType> > > > grid;
+                zd.Reconstruct(grid_);
+                std::cout << "done \n";
+                // for (int x = 0; x < dim; ++x)
+                // {
+                //     for (int y = 0; y < dim; ++y)
+                //     {
+                //         for (int z = 0; z < dim; ++z)
+                //         {
+                //             std::cout << "elem[" << x << "," << y << "," << z << "]" << grid_[x][y][z];
+                //         }
+                //     }
+                // }
 
                 if (rows.size() < rows_buffer_size)
                 {

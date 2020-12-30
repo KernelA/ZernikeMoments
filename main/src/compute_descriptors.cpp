@@ -214,21 +214,9 @@ void parallel::compute_descriptor(TasksQueue & queue, int max_order, std::atomic
 
                 auto invs{ zd.get_invariants() };
 
-                auto grid_ = vector<vector<vector<std::complex<DescriptorType>>>>(dim, vector<vector<std::complex<DescriptorType>>>(dim, vector<std::complex<DescriptorType>>(dim)));    //vector<vector<int>>(9,vector<int>(9));
-                std::cout << "here \n";
-                // vector<vector<vector<std::complex<DescriptorType> > > > grid;
+                auto grid_ = vector<vector<vector<std::complex<DescriptorType>>>>(dim, vector<vector<std::complex<DescriptorType>>>(dim, vector<std::complex<DescriptorType>>(dim)));
                 zd.Reconstruct(grid_);
-                std::cout << "done \n";
-                // for (int x = 0; x < dim; ++x)
-                // {
-                //     for (int y = 0; y < dim; ++y)
-                //     {
-                //         for (int z = 0; z < dim; ++z)
-                //         {
-                //             std::cout << "elem[" << x << "," << y << "," << z << "]" << grid_[x][y][z];
-                //         }
-                //     }
-                // }
+                std::cout << "reconstruction is done \n";
 
                 if (rows.size() < rows_buffer_size)
                 {

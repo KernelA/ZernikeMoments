@@ -188,7 +188,7 @@ public:
                     }
                     zernikeMoments_[n][li][m] = zm;
 
-                    //std::cout << "zernike moment[nlm]: " << n << "\t" << l << "\t" << m << "\t" << zernikeMoments_[n][li][m] << "\n";
+                    std::cout << "zernike moment[nlm]: " << n << "\t" << l << "\t" << m << "\t" << zernikeMoments_[n][li][m] << "\n";
                 }
             }
         }
